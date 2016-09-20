@@ -57,7 +57,6 @@ module PeRbac
 
   def self.update_user(login, email=nil, display_name=nil, role_ids=nil, is_revoked=nil)
     user = JSON.parse(get_user(get_user_id(login)).body)
-puts user
     if ! user['remote']
       # trade-off for auto id lookup is that you cant change logins...
       user['login'] = login ? login : user['login']
@@ -67,14 +66,6 @@ puts user
     user['role_ids'] = role_ids ? role_ids : user['role_ids']  
     user['is_revoked'] = (! is_revoked.nil?) ? is_revoked : user['is_revoked'] 
 
-    _request(:put, "/users/#{user['id']}", user)
-  end
-
-  def self.revoke_user(id, revoke=true)
-    user = {
-      'is_revoked' => revoke,
-      'id'         => id,
-    }
     _request(:put, "/users/#{user['id']}", user)
   end
 
