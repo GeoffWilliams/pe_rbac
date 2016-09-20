@@ -24,6 +24,7 @@ module PeRbac
   end
 
   # get the user id for a login
+  # eg 'admin' => '42bf351c-f9ec-40af-84ad-e976fec7f4bd'
   def self.get_user_id(login)
     users = JSON.parse(get_users.body)
     id = nil
@@ -39,7 +40,7 @@ module PeRbac
     _request(:get, "/users/#{id}")
   end
 
-  def self.create_user(login, email, display_name, role_ids=[], password=nil)
+  def self.create_user(login, email, display_name, password=nil, role_ids=[])
     # completely different to what the PE console sends... :/
     user={
       "login"         => login,
@@ -69,6 +70,17 @@ module PeRbac
     _request(:put, "/users/#{user['id']}", user)
   end
 
+  def self.change_password(login, new_password)
+    token = _request(:post, "/users/#{get_user_id(login)}/password/reset").body
+
+    reset = {
+      "token"     => token,
+      "password"  => new_password,
+    }
+
+    _request(:post, '/auth/reset', reset)
+  end
+  
   #
   # role
   #
@@ -78,6 +90,19 @@ module PeRbac
 
   def self.get_role(id)
     _request(:get, "/roles/#{id}")
+  end
+
+  # get the role id for a display name
+  # eg 'Code Deployers' => 4
+  def self.get_role_id(display_name)
+    roles = JSON.parse(get_users.body)
+    id = nil
+    roles.each { | role |
+      if role['displayName'] == display_name
+        id = role['id']
+      end
+    }
+    id
   end
 
   # doesn't seem possible to DELETE roles!
@@ -93,6 +118,18 @@ module PeRbac
     }
 
     _request(:post, "/roles", role)
+  end
+
+  #
+  # Token
+  #
+  def self.token(login, password)
+    payload = {
+      "login"     => login,
+      "password"  => password,
+    }
+
+    _request(:post, '/auth/token', payload)
   end
 
   private
@@ -119,6 +156,5 @@ module PeRbac
       payload: _payload,
     )
   end
-
 
 end
