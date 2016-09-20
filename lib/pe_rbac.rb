@@ -1,6 +1,7 @@
 require "pe_rbac/version"
 require 'restclient'
 require 'socket'
+require 'json'
 
 module PeRbac
   ssldir = '/etc/puppetlabs/puppet/ssl'
@@ -22,40 +23,50 @@ module PeRbac
     _request(:get, '/users')
   end
 
+  # get the user id for a login
+  def self.get_user_id(login)
+    users = JSON.parse(get_users.body)
+    id = nil
+    users.each { | user | 
+      if user['login'] == login
+        id = user['id']
+      end
+    }
+    id
+  end
+
   def self.get_user(id)
     _request(:get, "/users/#{id}")
   end
 
-  def self.create_user(display_name, login, email)
-    user = {
-      "userName"        => nil,
-      "displayName"     => display_name,
-      "login"           => login,
-      "email"           => email,
-      "isSuperuser"     => false,
-      "isRemote"        => false,
-      "isRevoked"       => false,
-      "lastLogin"       => nil,
-      "roles"           => [],
-      "groups"          => [],
-      "inheritedRoles"  => [],
+  def self.create_user(login, email, display_name, role_ids=[], password=nil)
+    # completely different to what the PE console sends... :/
+    user={
+      "login"         => login,
+      "email"         => email,
+      "display_name"  => display_name,
+      "role_ids"      => role_ids,
     }
+
+    if password
+      user["password"] = password
+    end
+
     _request(:post, '/users', user)
   end
 
-  def self.update_user(id, login, email, display_name, roles=[], remote=false, superuser=false)
-    user = {
-      'is_revoked'   => false,
-      'id'           => id,
-      'login'        => login,
-      'email'        => email,
-      'display_name' => display_name,
-      'role_ids'     => roles,
-      'is_remote'    => remote,
-      'is_superuser' => superuser,
-      #'last_login'   => @property_hash[:last_login],  << WTF puppet... stop smoking bongs
-      'is_group'     => false,
-    }
+  def self.update_user(login, email=nil, display_name=nil, role_ids=nil, is_revoked=nil)
+    user = JSON.parse(get_user(get_user_id(login)).body)
+puts user
+    if ! user['remote']
+      # trade-off for auto id lookup is that you cant change logins...
+      user['login'] = login ? login : user['login']
+      user['email'] = email ? email : user['email']
+      user['display_name'] = display_name ? display_name : user['display_name']
+    end
+    user['role_ids'] = role_ids ? role_ids : user['role_ids']  
+    user['is_revoked'] = (! is_revoked.nil?) ? is_revoked : user['is_revoked'] 
+
     _request(:put, "/users/#{user['id']}", user)
   end
 
@@ -64,7 +75,7 @@ module PeRbac
       'is_revoked' => revoke,
       'id'         => id,
     }
-    _request(:put, "/users/#{@user['id']}", user)
+    _request(:put, "/users/#{user['id']}", user)
   end
 
   #
@@ -95,8 +106,17 @@ module PeRbac
 
   private
 
-  def self._request(method, path, payload = nil)
+  def self._request(method, path, payload=nil, raw=false)
     url = "https://#{CONF[:host]}:#{CONF[:port]}#{BASE_URI}#{path}"
+    if payload
+      if raw
+        _payload=payload
+      else
+        _payload=payload.to_json
+      end
+    else
+      _payload=nil
+    end
     RestClient::Request.execute(
       method: method, 
       url: url,
@@ -104,7 +124,8 @@ module PeRbac
       ssl_client_cert: OpenSSL::X509::Certificate.new(File.read(CONF[:cert])),
       ssl_client_key: OpenSSL::PKey::RSA.new(File.read(CONF[:key])),
       ssl_version: :TLSv1,
-      payload: payload,
+      headers: {:content_type => :json, :accept => :json},
+      payload: _payload,
     )
   end
 
