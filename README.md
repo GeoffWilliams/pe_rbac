@@ -22,7 +22,19 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Setting up code manager on the command line
+```
+pe_rbac  code_manager --password t0ps3cret
+```
+Right now, the command line just provides a means to setup code manager.  If you
+want to do more then this, you must use the Ruby API
+
+### Ruby API
+An *IN FLUX* Ruby API exists, see code for more info.  This WILL change (well it 
+will if I do any more development work on this...) - expect module names, 
+functions, etc. to change.  In particular, I'm planning:
+* Sub-modules/file reorgs
+* tests!
 
 ## Development
 

@@ -2,27 +2,27 @@ require 'pe_rbac'
 begin
   # get all users
   resp = PeRbac::get_users
-  puts resp.code
+  puts resp
 
   # get user by ID
   resp = PeRbac::get_user('4765c077-3675-4a2d-85c0-0c76b82d15cb')
-  puts resp.code
+  puts resp
 
   # Lookup the ID for a user
-  resp = PeRbac::get_user_id('aadmin')
+  resp = PeRbac::get_user_id('admin')
   puts "FOUND: " + resp
 
   # get all roles
   resp = PeRbac::get_roles
-  puts resp.code
+  puts resp
 
   # get role by ID
   resp = PeRbac::get_role(1)
-  puts resp.code
+  puts resp
 
   # create user (works - commented out to preven conflict error)
   #resp = PeRbac::create_user('test','test@test.com', 'mr test test')
-  #puts resp.code
+  #puts resp
 
   # update user
   resp = PeRbac::update_user('test','test@test.com.au', 'mrs test test')
@@ -36,10 +36,20 @@ begin
   resp = PeRbac::token('test', '12345678')
   puts resp
   
-  # create a user with role access and write a token
+  # create or update a user with role access and write a token
   role_ids = PeRbac::get_role_ids('Code Deployers')
-  PeRbac::create_user('psquared', 'root@localhost', 'psquared', 'changeme', role_ids)
-  PeRbac::login('psquared', 'changeme')
+  perms = {
+    "objectType" => "tokens",
+    "action"     => "override_lifetime",
+    "instance"   => nil,
+  }
+  PeRbac::update_role('Code Deployers', permissions=perms)
+  PeRbac::ensure_user('psquared', 'root@localhost', 'psquared', 'changeme', role_ids)
+  PeRbac::login('psquared', 'changeme', '10y')
+
+  # what permissions are there?
+  resp = PeRbac::get_permissions
+  puts resp.body
 
 rescue Exception => e
   puts e.message
