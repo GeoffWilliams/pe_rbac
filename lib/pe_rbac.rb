@@ -28,11 +28,18 @@ module PeRbac
   def self.get_user_id(login)
     users = JSON.parse(get_users.body)
     id = nil
-    users.each { | user | 
-      if user['login'] == login
-        id = user['id']
+    i = 0
+    found = false
+    while !found and i < users.length do
+      if users[i]['login'] == login
+        id = users[i]['id']
+        found = true
       end
-    }
+      i += 1
+    end
+    if ! found
+      raise("Login #{login} does not exist")
+    end
     id
   end
 
@@ -94,15 +101,27 @@ module PeRbac
 
   # get the role id for a display name
   # eg 'Code Deployers' => 4
-  def self.get_role_id(display_name)
-    roles = JSON.parse(get_users.body)
-    id = nil
-    roles.each { | role |
-      if role['displayName'] == display_name
-        id = role['id']
+  def self.get_role_ids(display_names)
+    if ! display_names.is_a? Array
+      display_names = [display_names]
+    end
+    roles = JSON.parse(get_roles.body)
+    ids = []
+    display_names.each { |display_name|
+      i=0
+      found=false
+      while !found and i < roles.size do
+        if roles[i]['display_name'] == display_name
+          ids.push(roles[i]['id'])
+          found=true
+        end
+        i+=1
+      end
+      if !found
+        raise("RBAC role '#{display_name}' not found")
       end
     }
-    id
+    ids
   end
 
   # doesn't seem possible to DELETE roles!
@@ -129,7 +148,17 @@ module PeRbac
       "password"  => password,
     }
 
-    _request(:post, '/auth/token', payload)
+    JSON.parse(_request(:post, '/auth/token', payload))['token']
+  end
+
+  def self.login(login, password)
+    dirname = Dir.home + '/.puppetlabs'
+    tokenfile = dirname + '/token'
+    if ! Dir.exist?(dirname)
+      Dir.mkdir(dirname, 0700)
+    end
+    File.write(tokenfile, token(login, password))
+    File.chmod(0600, tokenfile)
   end
 
   private

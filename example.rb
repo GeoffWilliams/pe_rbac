@@ -7,7 +7,10 @@ begin
   # get user by ID
   resp = PeRbac::get_user('4765c077-3675-4a2d-85c0-0c76b82d15cb')
   puts resp.code
-	puts resp.body
+
+  # Lookup the ID for a user
+  resp = PeRbac::get_user_id('aadmin')
+  puts "FOUND: " + resp
 
   # get all roles
   resp = PeRbac::get_roles
@@ -31,8 +34,12 @@ begin
 
   # get an API token
   resp = PeRbac::token('test', '12345678')
-  puts resp.code
-  puts resp.body
+  puts resp
+  
+  # create a user with role access and write a token
+  role_ids = PeRbac::get_role_ids('Code Deployers')
+  PeRbac::create_user('psquared', 'root@localhost', 'psquared', 'changeme', role_ids)
+  PeRbac::login('psquared', 'changeme')
 
 rescue Exception => e
   puts e.message
