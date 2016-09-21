@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+require 'pe_rbac'
+require 'escort'
+
+Escort::App.create do |app|
+  app.version "0.0.1"
+  app.summary "pe_rbac"
+  app.description "create RBAC users and install tokens"
+
+  app.command :code_manager do |command|
+    command.summary "Setup a code manager"
+    command.description "Create a deploy user for use with code manager and install token"
+    command.action do |options, arguments|
+      role      = 'Code Deployers'
+      cmd       = :code_manager # FIXME obtain this automatically
+      lifetime  = options[:global][:commands][cmd][:options][:lifetime]
+      username  = options[:global][:commands][cmd][:options][:username]
+      password  = options[:global][:commands][cmd][:options][:password]
+      email     = options[:global][:commands][cmd][:options][:email]
+      role_ids = PeRbac::get_role_ids(role)
+
+      perms = {
+        "objectType" => "tokens",
+        "action"     => "override_lifetime",
+        "instance"   => nil,
+      }
+      PeRbac::update_role(role, permissions=perms)
+      PeRbac::ensure_user(username, email, username, password, role_ids)
+      PeRbac::login(username, password, lifetime)     
+    end
+    command.options do |opts|
+      opts.opt(:username,
+        'Username for deploy user',
+        :long    => '--username',
+        :default => 'deploy'
+      )
+      opts.opt(:password,
+        'Initial password for deploy user',
+        :long    => '--password',
+        :default => 'changeme'
+      )
+      opts.opt(:email,
+        'Email address',
+        :long    => '--email',
+        :default => 'root@localhost'
+      )
+      opts.opt(:lifetime,
+        'Token validity length',
+        :long    => '--lifetime',
+        :default => '10y'
+      )
+    end
+  end
+
+end
