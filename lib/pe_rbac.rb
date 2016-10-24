@@ -5,7 +5,7 @@ require 'json'
 
 module PeRbac
   ssldir = '/etc/puppetlabs/puppet/ssl'
-  fqdn = %x(facter fqdn)
+  fqdn = %x(facter fqdn).strip
   pe_old_pk   = "#{ssldir}/private_keys/pe-internal-orchestrator.pem"
   pe_old_cert = "#{ssldir}/certs/pe-internal-orchestrator.pem"
   pe_new_pk   = "#{ssldir}/private_keys/#{fqdn}.pem"
