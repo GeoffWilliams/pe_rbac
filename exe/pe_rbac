@@ -3,7 +3,7 @@ require 'pe_rbac'
 require 'escort'
 
 Escort::App.create do |app|
-  app.version PeRbac.VERSION
+  app.version PeRbac::VERSION
   app.summary "pe_rbac"
   app.description "create RBAC users and install tokens"
 
