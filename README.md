@@ -6,6 +6,11 @@ TODO: Delete this and the text above, and describe your gem
 
 ## Installation
 
+Gem dependencies need G++ amongst other things.  Easiest way to proceed:
+```
+yum groupinstall 'Development Tools'
+```
+
 Add this line to your application's Gemfile:
 
 ```ruby

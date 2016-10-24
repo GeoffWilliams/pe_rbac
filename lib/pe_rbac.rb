@@ -5,11 +5,28 @@ require 'json'
 
 module PeRbac
   ssldir = '/etc/puppetlabs/puppet/ssl'
+  fqdn = %x(facter fqdn)
+  pe_old_pk   = "#{ssldir}/private_keys/pe-internal-orchestrator.pem"
+  pe_old_cert = "#{ssldir}/certs/pe-internal-orchestrator.pem"
+  pe_new_pk   = "#{ssldir}/private_keys/#{fqdn}.pem"
+  pe_new_cert = "#{ssldir}/certs/#{fqdn}.pem"
+
+  # pe 2016.4.0 removes the pe-internal-orchestrator.pem file but old systems
+  # will still have the client cert (which won't work), so pick based on 
+  # using pe-internal-orchestrator.pem if its available
+  if File.exist?(pe_old_pk)
+    pk    = pe_old_pk
+    cert  = pe_old_cert
+  else
+    pk    = pe_new_pk
+    cert  = pe_new_cert
+  end
+
   CONF = {
     host: Socket.gethostname,
     port: 4433,
-    cert: ssldir + '/certs/pe-internal-orchestrator.pem',
-    key: ssldir + '/private_keys/pe-internal-orchestrator.pem',
+    cert: cert,
+    key: pk,
     cacert: ssldir + '/certs/ca.pem'
   }
 
