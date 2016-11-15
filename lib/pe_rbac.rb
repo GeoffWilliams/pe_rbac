@@ -23,7 +23,7 @@ module PeRbac
   end
 
   CONF = {
-    host: Socket.gethostname,
+    host: Socket.gethostname.downcase,
     port: 4433,
     cert: cert,
     key: pk,
