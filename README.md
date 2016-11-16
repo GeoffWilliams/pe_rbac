@@ -34,6 +34,15 @@ pe_rbac  code_manager --password t0ps3cret
 Right now, the command line just provides a means to setup code manager.  If you
 want to do more then this, you must use the Ruby API
 
+### Generating a token to use for ro/rw access to PuppetDB API
+```
+# read-only access
+pe_rbac puppetdb --password t0ps3cret
+
+# read-write access
+pe_rbac puppetdb --allow-write --password t0ps3cret
+```
+
 ### Ruby API
 An *IN FLUX* Ruby API exists, see code for more info.  This WILL change (well it 
 will if I do any more development work on this...) - expect module names, 
