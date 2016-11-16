@@ -149,30 +149,33 @@ module PeRbac
     ids = []
     display_names.each { |display_name|
       found=get_role_id(display_name)
-      if !found
-        raise("RBAC role '#{display_name}' not found")
+      #if !found
+      #  raise("RBAC role '#{display_name}' not found")
+      #end
+      if found
+        ids.push(found)
       end
-      ids.push(found)
     }
     ids
   end
 
   # CREATE
-  def self.ensure_role(display_name, description, permissions=[], users=[])
+  def self.ensure_role(display_name, description, permissions=[], user_ids=[])
     if get_role_id(display_name)
-      update_role(display_name, description, permissions, users)
+      update_role(display_name, description, permissions, user_ids)
     else
-      create_role(display_name, description, permissions, users)
+      create_role(display_name, description, permissions, user_ids)
     end
   end
-  
-  def self.create_role(display_name, description, permissions=[], users=[])
+ 
+  # https://docs.puppet.com/pe/latest/rbac_roles_v1.html#post-roles 
+  def self.create_role(display_name, description=display_name, permissions=[], user_ids=[], group_ids=[])
     role = {
+      "permissions"   => permissions,
+      "user_ids"      => user_ids,
+      "group_ids"     => group_ids,
       "display_name"  => display_name,
       "description"   => description,
-      "permissions"   => permissions,
-      "user_ids"      => users,
-      "group_ids"     => [], # doesn't seem to be used yet
     }
     _request(:post, '/roles', role)
   end
@@ -181,11 +184,11 @@ module PeRbac
     role_id = get_role_id(display_name)
     if role_id 
       role = get_role(role_id)
-      role['display_name'] = display_name ? display_name : role['display_name']
-      role['description'] = description ? display_name : role['description']
-      role['permissions'] = permissions ? display_name : role['permissions']
-      role['user_ids'] = user_ids ? display_name : role['user_ids']
-      role['group_ids'] = group_ids ? display_name : role['group_ids']
+      role['display_name']  = display_name ? display_name : role['display_name']
+      role['description']   = description ? display_name : role['description']
+      role['permissions']   = permissions ? permissions : role['permissions']
+      role['user_ids']      = user_ids ? user_ids : role['user_ids']
+      role['group_ids']     = group_ids ? group_ids : role['group_ids']
 
       _request(:put, "/roles/#{role_id}", role)
     else
@@ -242,16 +245,23 @@ module PeRbac
     else
       _payload=nil
     end
-    RestClient::Request.execute(
-      method: method, 
-      url: url,
-      ssl_ca_file: CONF[:cacert],
-      ssl_client_cert: OpenSSL::X509::Certificate.new(File.read(CONF[:cert])),
-      ssl_client_key: OpenSSL::PKey::RSA.new(File.read(CONF[:key])),
-      ssl_version: :TLSv1,
-      headers: {:content_type => :json, :accept => :json},
-      payload: _payload,
-    )
+    begin
+      RestClient::Request.execute(
+        method: method, 
+        url: url,
+        ssl_ca_file: CONF[:cacert],
+        ssl_client_cert: OpenSSL::X509::Certificate.new(File.read(CONF[:cert])),
+        ssl_client_key: OpenSSL::PKey::RSA.new(File.read(CONF[:key])),
+        ssl_version: :TLSv1,
+        headers: {:content_type => :json, :accept => :json},
+        payload: _payload,
+      )
+    rescue RestClient::ExceptionWithResponse => e
+      Escort::Logger.error.error url
+      Escort::Logger.error.error _payload
+      Escort::Logger.error.error e.response
+      raise "API Error"
+    end
   end
 
 end

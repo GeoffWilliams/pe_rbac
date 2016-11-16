@@ -13,18 +13,27 @@ Escort::App.create do |app|
     command.action do |options, arguments|
       role      = 'Code Deployers'
       cmd       = :code_manager # FIXME obtain this automatically
+      description = options[:global][:commands][cmd][:options][:description]
       lifetime  = options[:global][:commands][cmd][:options][:lifetime]
       username  = options[:global][:commands][cmd][:options][:username]
       password  = options[:global][:commands][cmd][:options][:password]
       email     = options[:global][:commands][cmd][:options][:email]
+  
       role_ids = PeRbac::get_role_ids(role)
 
-      perms = {
-        "objectType" => "tokens",
-        "action"     => "override_lifetime",
-        "instance"   => nil,
-      }
-      PeRbac::update_role(role, permissions=perms)
+      perms = [{
+        "object_type" => "tokens",
+        "action"      => "override_lifetime",
+        "instance"    => "*",
+      }]
+
+      # only need to update the role since its built-in
+      PeRbac::update_role(
+        role, 
+        nil,
+        perms, 
+      )
+
       PeRbac::ensure_user(username, email, username, password, role_ids)
       PeRbac::login(username, password, lifetime)     
     end
@@ -52,4 +61,87 @@ Escort::App.create do |app|
     end
   end
 
+  app.command :puppetdb do |command|
+    command.summary "Access to PuppetDB"
+    command.description "Create a user and token to access PuppetDB"
+    command.action do |options, arguments|
+      role        = 'PuppetDB Readers'
+      cmd         = :puppetdb # FIXME obtain this automatically
+      description = options[:global][:commands][cmd][:options][:description]
+      lifetime    = options[:global][:commands][cmd][:options][:lifetime]
+      username    = options[:global][:commands][cmd][:options][:username]
+      password    = options[:global][:commands][cmd][:options][:password]
+      email       = options[:global][:commands][cmd][:options][:email]
+      allow_write = options[:global][:commands][cmd][:options][:allow_write]
+      perms       = [
+        {
+          "object_type" => "tokens",
+          "action"      => "override_lifetime",
+          "instance"    => "*",
+        },
+        {
+          "object_type" => "nodes",
+          "action"      => "view_data",
+          "instance"    => "*",
+        }
+      ]
+      if allow_write
+        perms.push({
+          "object_type" => "nodes",
+          "action"      => "edit_data",
+          "instance"    => "*",
+        })
+      end 
+
+      # create/update the role
+      PeRbac::ensure_role(
+        role,
+        description, 
+        perms
+      )
+      
+      # get the ID of the newly created role
+      role_ids    = PeRbac::get_role_ids(role)
+
+      # join a user to the role
+      PeRbac::ensure_user(username, email, username, password, role_ids)
+
+      # Generate and output the token
+      token = PeRbac::token(username, password, lifetime)
+      Escort::Logger.output.puts token
+    end
+    command.options do |opts|
+      opts.opt(:username,
+        'Username for puppetdb user',
+        :long     => '--username',
+        :default  => 'puppetdb_read'
+      )
+      opts.opt(:password,
+        'Initial password for deploy user',
+        :long     => '--password',
+        :default  => 'changeme'
+      )
+      opts.opt(:email,
+        'Email address',
+        :long     => '--email',
+        :default  => 'root@localhost'
+      )
+      opts.opt(:lifetime,
+        'Token validity length',
+        :long     => '--lifetime',
+        :default  => '10y'
+      )
+      opts.opt(:allow_write,
+        'Allow WRITING to PuppetDB?',
+        :long     => '--allow-write',
+        :type     => :boolean,
+        :default  => false
+      )
+      opts.opt(:description,
+        'Custommise the role description',
+        :long     => '--description',
+        :default  => 'Token access to PuppetDB'
+      )    
+    end
+  end
 end
