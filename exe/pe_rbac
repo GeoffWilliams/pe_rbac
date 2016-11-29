@@ -18,7 +18,7 @@ Escort::App.create do |app|
       username  = options[:global][:commands][cmd][:options][:username]
       password  = options[:global][:commands][cmd][:options][:password]
       email     = options[:global][:commands][cmd][:options][:email]
-  
+
       role_ids = PeRbac::get_role_ids(role)
 
       perms = [{
@@ -29,13 +29,13 @@ Escort::App.create do |app|
 
       # only need to update the role since its built-in
       PeRbac::update_role(
-        role, 
+        role,
         nil,
-        perms, 
+        perms,
       )
 
       PeRbac::ensure_user(username, email, username, password, role_ids)
-      PeRbac::login(username, password, lifetime)     
+      PeRbac::login(username, password, lifetime)
     end
     command.options do |opts|
       opts.opt(:username,
@@ -91,15 +91,15 @@ Escort::App.create do |app|
           "action"      => "edit_data",
           "instance"    => "*",
         })
-      end 
+      end
 
       # create/update the role
       PeRbac::ensure_role(
         role,
-        description, 
+        description,
         perms
       )
-      
+
       # get the ID of the newly created role
       role_ids    = PeRbac::get_role_ids(role)
 
@@ -141,7 +141,33 @@ Escort::App.create do |app|
         'Custommise the role description',
         :long     => '--description',
         :default  => 'Token access to PuppetDB'
-      )    
+      )
     end
   end
+
+  app.command :reset_password do |command|
+    command.summary "Reset a logon password"
+    command.description "Obtain a reset token and then reset a password"
+    command.action do |options, arguments|\
+      # fixme - obtain automatically
+      cmd         = :reset_password
+      username    = options[:global][:commands][cmd][:options][:username]
+      password    = options[:global][:commands][cmd][:options][:password]
+
+      PeRbac::reset_password(username, password)
+    end
+    command.options do |opts|
+      opts.opt(:username,
+        'Username to reset',
+        :long     => '--username',
+        :default  => 'admin'
+      )
+      opts.opt(:password,
+        'Password to reset to',
+        :long     => '--password',
+        :default  => 'changeme'
+      )
+    end
+  end
+
 end

@@ -12,7 +12,7 @@ module PeRbac
   pe_new_cert = "#{ssldir}/certs/#{fqdn}.pem"
 
   # pe 2016.4.0 removes the pe-internal-orchestrator.pem file but old systems
-  # will still have the client cert (which won't work), so pick based on 
+  # will still have the client cert (which won't work), so pick based on
   # using pe-internal-orchestrator.pem if its available
   if File.exist?(pe_old_pk)
     pk    = pe_old_pk
@@ -34,7 +34,7 @@ module PeRbac
 
   #
   # user
-  # 
+  #
 
   def self.get_users
     JSON.parse(_request(:get, '/users').body)
@@ -97,8 +97,8 @@ module PeRbac
       user['email'] = email ? email : user['email']
       user['display_name'] = display_name ? display_name : user['display_name']
     end
-    user['role_ids'] = role_ids ? role_ids : user['role_ids']  
-    user['is_revoked'] = (! is_revoked.nil?) ? is_revoked : user['is_revoked'] 
+    user['role_ids'] = role_ids ? role_ids : user['role_ids']
+    user['is_revoked'] = (! is_revoked.nil?) ? is_revoked : user['is_revoked']
 
     _request(:put, "/users/#{user['id']}", user)
   end
@@ -113,7 +113,7 @@ module PeRbac
 
     _request(:post, '/auth/reset', reset)
   end
-  
+
   #
   # role
   #
@@ -138,7 +138,7 @@ module PeRbac
     found
   end
 
-  
+
   # get the role id for a display name
   # eg ['Code Deployers', 'blah'] => [4,8]
   def self.get_role_ids(display_names)
@@ -167,8 +167,8 @@ module PeRbac
       create_role(display_name, description, permissions, user_ids)
     end
   end
- 
-  # https://docs.puppet.com/pe/latest/rbac_roles_v1.html#post-roles 
+
+  # https://docs.puppet.com/pe/latest/rbac_roles_v1.html#post-roles
   def self.create_role(display_name, description=display_name, permissions=[], user_ids=[], group_ids=[])
     role = {
       "permissions"   => permissions,
@@ -182,7 +182,7 @@ module PeRbac
 
   def self.update_role(display_name, description=nil, permissions=nil, user_ids=nil, group_ids=nil)
     role_id = get_role_id(display_name)
-    if role_id 
+    if role_id
       role = get_role(role_id)
       role['display_name']  = display_name ? display_name : role['display_name']
       role['description']   = description ? display_name : role['description']
@@ -195,7 +195,7 @@ module PeRbac
       raise("No such role exists: #{display_name} create it first or use ensure_role")
     end
   end
-  
+
 
   #
   # Permissions
@@ -213,7 +213,7 @@ module PeRbac
       "login"     => login,
       "password"  => password,
     }
-    
+
     # see https://docs.puppet.com/pe/latest/rbac_token_auth.html#setting-a-token-specific-lifetime
     if lifetime
       payload["lifetime"] = lifetime
@@ -232,6 +232,23 @@ module PeRbac
     File.chmod(0600, tokenfile)
   end
 
+  def self.reset_password(login, password)
+    # lookup user id
+    user_id = self.get_user_id(login)
+    if user_id
+      # get password reset token
+      reset_token = _request(:post, "/users/#{user_id}/password/reset")
+
+      # reset password
+      _request(:post, '/auth/reset', {
+        'token'     => reset_token,
+        'password'  => password,
+      })
+    else
+      Escort::Logger.error.error "No such user: #{login}"
+    end
+  end
+
   private
 
   def self._request(method, path, payload=nil, raw=false)
@@ -247,7 +264,7 @@ module PeRbac
     end
     begin
       RestClient::Request.execute(
-        method: method, 
+        method: method,
         url: url,
         ssl_ca_file: CONF[:cacert],
         ssl_client_cert: OpenSSL::X509::Certificate.new(File.read(CONF[:cert])),
