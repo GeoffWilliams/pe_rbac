@@ -43,9 +43,20 @@ pe_rbac puppetdb --password t0ps3cret
 pe_rbac puppetdb --allow-write --password t0ps3cret
 ```
 
+### Resetting a user password
+```
+pe_rbac reset_password
+```
+Change the password for `admin` to `changeme`
+
+```
+pe_rbac reset_password --username foo --password 12345678
+```
+Reset the password for the `foo` user to `12345678`
+
 ### Ruby API
-An *IN FLUX* Ruby API exists, see code for more info.  This WILL change (well it 
-will if I do any more development work on this...) - expect module names, 
+An *IN FLUX* Ruby API exists, see code for more info.  This WILL change (well it
+will if I do any more development work on this...) - expect module names,
 functions, etc. to change.  In particular, I'm planning:
 * Sub-modules/file reorgs
 * tests!
@@ -69,4 +80,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
