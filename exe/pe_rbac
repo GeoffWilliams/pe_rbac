@@ -20,6 +20,8 @@ Escort::App.create do |app|
       email     = options[:global][:commands][cmd][:options][:email]
 
       role_ids = PeRbac::get_role_ids(role)
+      # always returns an array even though there should only be one match
+      role_data = PeRbac::get_role(role_ids.first)
 
       perms = [{
         "object_type" => "tokens",
@@ -31,7 +33,7 @@ Escort::App.create do |app|
       PeRbac::update_role(
         role,
         nil,
-        perms,
+        PeRbac::merge_permissions(role_data['permissions'], perms)
       )
 
       PeRbac::ensure_user(username, email, username, password, role_ids)

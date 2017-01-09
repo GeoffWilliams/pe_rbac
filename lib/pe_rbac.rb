@@ -249,6 +249,29 @@ module PeRbac
     end
   end
 
+  # return a new array of permissions, adding the permission `ensure` to the
+  # existing permissions if required
+  def self.merge_permissions(existing, ensure_perms)
+    # duplicate existing array of hash
+    permissions = existing.map do |e| e.dup end
+
+    ensure_perms.each { |ensure_perm|
+      ensure_perm_exists = false
+      existing.each { |existing_perm|
+        if  existing_perm['object_type']  == ensure_perm['object_type'] and
+            existing_perm['action']       == ensure_perm['action'] and
+            existing_perm['instance']     == ensure_perm['instance']
+          ensure_perm_exists = true
+        end
+      }
+      if ! ensure_perm_exists
+        permissions.push(ensure_perm)
+      end
+    }
+
+    permissions
+  end
+
   private
 
   def self._request(method, path, payload=nil, raw=false)
