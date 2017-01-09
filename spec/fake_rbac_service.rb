@@ -5,15 +5,27 @@ require 'rack'
 
 module FakeRbacService
   class FakeRbacService < Sinatra::Base
-    set :port, 4433
+    #set :port, 4433
+    JSON_DIR = './spec/fixtures/json'
+
+    def read_json(verb, operation)
+      File.read(File.join(JSON_DIR, verb, operation + '.json'))
+    end
 
     # All users
     get '/rbac-api/v1/users' do
-
+      read_json('get', 'users')
     end
 
     # a specific user
     get '/rbac-api/v1/users/:id' do
+      found = nil
+      JSON.parse(read_json('get', 'users')).each { |j|
+        if j['id'] == params[:id]
+          found = j
+        end
+      }
+      found
     end
 
     # create a user
@@ -22,7 +34,7 @@ module FakeRbacService
     end
 
     # update a user
-    post '/rbac-api/v1/users/:id' do
+    put '/rbac-api/v1/users/:id' do
 
     end
 
@@ -32,18 +44,24 @@ module FakeRbacService
     end
 
     # reset using a token
-    post '/rbac-api/v1//auth/reset' do
+    post '/rbac-api/v1/auth/reset' do
 
     end
 
     # list all roles
     get '/rbac-api/v1/roles' do
-
+      read_json('get', 'roles')
     end
 
     # list a specific role
-    get '/rbac-api/v1/roles/:id' do
-
+    get '/rbac-api/v1/roles/:id' do 
+      found = nil
+      JSON.parse(read_json('get', 'roles')).each { |j|
+        if j['id'] == params[:id]
+          found = j
+        end
+      }
+      found
     end
 
     # create a role
