@@ -92,12 +92,11 @@ module FakeRbacService
         :Logger               => ::WEBrick::Log::new($stdout, ::WEBrick::Log::DEBUG),
         :SSLEnable            => true,
         :force_ssl            => true,
-        :SSLVerifyClient    => OpenSSL::SSL::VERIFY_PEER,
-        #:ssl_version        => "TLSv1_2",
-        :SSLCACertificateFile => "./spec/fixtures/ssl/ca.pem",
+        :SSLVerifyClient      => OpenSSL::SSL::VERIFY_PEER,
+        :SSLCACertificateFile => "./spec/fixtures/ssl/certs/ca.pem",
         :SSLCertificate       => OpenSSL::X509::Certificate.new(  File.open("./spec/fixtures/ssl/certs/localhost.pem").read),
         :SSLPrivateKey        => OpenSSL::PKey::RSA.new(          File.open("./spec/fixtures/ssl/private_keys/localhost.pem").read),
-        :SSLCertName          => [ [ "CN",'FakeRbacService' ] ]
+        :SSLCertName          => [ [ "CN",'localhost' ] ]
       }
 
       Rack::Handler::WEBrick.run FakeRbacService, webrick_options
