@@ -64,7 +64,7 @@ module PeRbac
           ssl_ca_file: conf[:cacert],
           ssl_client_cert: OpenSSL::X509::Certificate.new(File.read(conf[:cert])),
           ssl_client_key: OpenSSL::PKey::RSA.new(File.read(conf[:key])),
-          ssl_version: "TLSv1_2", #:TLSv1_2,
+          ssl_version: :TLSv1_2,
           headers: {:content_type => :json, :accept => :json},
           payload: _payload,
         )

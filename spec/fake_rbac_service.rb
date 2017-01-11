@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'webrick'
 require 'webrick/log'
+require "webrick/https"
 require 'rack'
 
 module FakeRbacService
@@ -90,9 +91,9 @@ module FakeRbacService
         :Port                 => 4433,
         :Logger               => ::WEBrick::Log::new($stdout, ::WEBrick::Log::DEBUG),
         :SSLEnable            => true,
-        #:force_ssl            => true,
+        :force_ssl            => true,
         :SSLVerifyClient    => OpenSSL::SSL::VERIFY_PEER,
-        :ssl_version        => "TLSv1_2",
+        #:ssl_version        => "TLSv1_2",
         :SSLCACertificateFile => "./spec/fixtures/ssl/ca.pem",
         :SSLCertificate       => OpenSSL::X509::Certificate.new(  File.open("./spec/fixtures/ssl/certs/localhost.pem").read),
         :SSLPrivateKey        => OpenSSL::PKey::RSA.new(          File.open("./spec/fixtures/ssl/private_keys/localhost.pem").read),
