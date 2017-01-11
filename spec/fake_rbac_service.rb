@@ -54,7 +54,7 @@ module FakeRbacService
     end
 
     # list a specific role
-    get '/rbac-api/v1/roles/:id' do 
+    get '/rbac-api/v1/roles/:id' do
       found = nil
       JSON.parse(read_json('get', 'roles')).each { |j|
         if j['id'] == params[:id]
@@ -92,7 +92,7 @@ module FakeRbacService
         :SSLEnable            => true,
         :SSLCACertificateFile => "./spec/fixtures/ssl/ca.pem",
         :SSLCertificate       => OpenSSL::X509::Certificate.new(  File.open("./spec/fixtures/ssl/certs/localhost.pem").read),
-        :SSLPrivateKey        => OpenSSL::PKey::RSA.new(          File.open("./spec/fixtures/ssl/private_keys/localhost.key").read),
+        :SSLPrivateKey        => OpenSSL::PKey::RSA.new(          File.open("./spec/fixtures/ssl/private_keys/localhost.pem").read),
         :SSLCertName          => [ [ "CN",'FakeRbacService' ] ]
       }
 

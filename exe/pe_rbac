@@ -1,5 +1,9 @@
 #!/usr/bin/env ruby
 require 'pe_rbac'
+require 'pe_rbac/action'
+require 'pe_rbac/core'
+require 'pe_rbac/role'
+require 'pe_rbac/user'
 require 'escort'
 
 Escort::App.create do |app|
@@ -19,9 +23,9 @@ Escort::App.create do |app|
       password  = options[:global][:commands][cmd][:options][:password]
       email     = options[:global][:commands][cmd][:options][:email]
 
-      role_ids = PeRbac::get_role_ids(role)
+      role_ids = PeRbac::Role::get_role_ids(role)
       # always returns an array even though there should only be one match
-      role_data = PeRbac::get_role(role_ids.first)
+      role_data = PeRbac::Role::get_role(role_ids.first)
 
       perms = [{
         "object_type" => "tokens",
@@ -30,14 +34,14 @@ Escort::App.create do |app|
       }]
 
       # only need to update the role since its built-in
-      PeRbac::update_role(
+      PeRbac::Role::update_role(
         role,
         nil,
-        PeRbac::merge_permissions(role_data['permissions'], perms)
+        PeRbac::Core::merge_permissions(role_data['permissions'], perms)
       )
 
-      PeRbac::ensure_user(username, email, username, password, role_ids)
-      PeRbac::login(username, password, lifetime)
+      PeRbac::User::ensure_user(username, email, username, password, role_ids)
+      PeRbac::Action::login(username, password, lifetime)
     end
     command.options do |opts|
       opts.opt(:username,
@@ -96,20 +100,20 @@ Escort::App.create do |app|
       end
 
       # create/update the role
-      PeRbac::ensure_role(
+      PeRbac::Role::ensure_role(
         role,
         description,
         perms
       )
 
       # get the ID of the newly created role
-      role_ids    = PeRbac::get_role_ids(role)
+      role_ids    = PeRbac::Role::get_role_ids(role)
 
       # join a user to the role
-      PeRbac::ensure_user(username, email, username, password, role_ids)
+      PeRbac::User::ensure_user(username, email, username, password, role_ids)
 
       # Generate and output the token
-      token = PeRbac::token(username, password, lifetime)
+      token = PeRbac::Action::token(username, password, lifetime)
       Escort::Logger.output.puts token
     end
     command.options do |opts|
@@ -156,7 +160,7 @@ Escort::App.create do |app|
       username    = options[:global][:commands][cmd][:options][:username]
       password    = options[:global][:commands][cmd][:options][:password]
 
-      PeRbac::reset_password(username, password)
+      PeRbac::Action::reset_password(username, password)
     end
     command.options do |opts|
       opts.opt(:username,
