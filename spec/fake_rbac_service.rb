@@ -26,7 +26,7 @@ module FakeRbacService
           found = j
         end
       }
-      found
+      found.to_json
     end
 
     # create a user
