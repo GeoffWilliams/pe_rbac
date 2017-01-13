@@ -16,4 +16,60 @@ describe PeRbac::Core do
 
     expect(PeRbac::Core::get_conf).not_to be nil
   end
+
+  it "merge permissions merges correctly" do
+    perms = [
+      {
+        'object_type' => 'foo',
+        'action'      => 'bar',
+        'instance'    => 'baz',
+      },
+      {
+        'object_type' => 'curly',
+        'action'      => 'larry',
+        'instance'    => 'moe',
+      },
+    ]
+
+    new_perms = [
+      {
+        'object_type' => 'new_object_type',
+        'action'      => 'new_action',
+        'instance'    => 'new_instance',
+      }
+    ]
+
+    # merge a single new object
+    merged = PeRbac::Core::merge_permissions(perms, new_perms)
+    expect(merged).not_to be nil
+    expect(merged.size).to be 3
+    expect(merged[2]['object_type']).to eq 'new_object_type'
+  end
+
+  it "merges existing permissions correctly" do
+    perms = [
+      {
+        'object_type' => 'foo',
+        'action'      => 'bar',
+        'instance'    => 'baz',
+      },
+      {
+        'object_type' => 'curly',
+        'action'      => 'larry',
+        'instance'    => 'moe',
+      },
+    ]
+
+    new_perms = [
+      {
+        'object_type' => 'curly',
+        'action'      => 'larry',
+        'instance'    => 'moe',
+      }
+    ]
+
+    merged = PeRbac::Core::merge_permissions(perms, new_perms)
+    expect(merged).not_to be nil
+    expect(merged.size).to be 2
+  end
 end
