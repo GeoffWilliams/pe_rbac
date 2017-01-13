@@ -1,0 +1,230 @@
+[
+  {
+    "object_type": "roles",
+    "display_name": "User roles",
+    "description": "Define what users and groups have permission to do",
+    "actions": [
+      {
+        "has_instances": false,
+        "name": "edit",
+        "display_name": "Edit",
+        "description": "Edit a role"
+      },
+      {
+        "has_instances": false,
+        "name": "create",
+        "display_name": "Create",
+        "description": "Create a role"
+      },
+      {
+        "has_instances": true,
+        "name": "edit_members",
+        "display_name": "Edit members",
+        "description": "Edit a role's members"
+      }
+    ]
+  },
+  {
+    "object_type": "user_groups",
+    "display_name": "User groups",
+    "description": "Groups of users",
+    "actions": [
+      {
+        "has_instances": true,
+        "name": "delete",
+        "display_name": "Delete",
+        "description": "Delete a user group"
+      },
+      {
+        "has_instances": false,
+        "name": "import",
+        "display_name": "Import",
+        "description": "Import a user group from AD/LDAP"
+      }
+    ]
+  },
+  {
+    "object_type": "puppet_agent",
+    "display_name": "Puppet agent",
+    "description": "Puppet agent",
+    "actions": [
+      {
+        "has_instances": false,
+        "name": "run",
+        "display_name": "Run Puppet from console",
+        "description": "Run Puppet on agent nodes from the Puppet Enterprise console"
+      }
+    ]
+  },
+  {
+    "object_type": "node_groups",
+    "display_name": "Node groups",
+    "description": "Node groups",
+    "actions": [
+      {
+        "has_instances": true,
+        "name": "set_environment",
+        "display_name": "Set environment",
+        "description": "Edit a node group's environment"
+      },
+      {
+        "has_instances": true,
+        "name": "edit_params_and_vars",
+        "display_name": "Edit parameters and variables",
+        "description": "Edit a node group's parameters and variables."
+      },
+      {
+        "has_instances": true,
+        "name": "view",
+        "display_name": "View",
+        "description": "View a node group"
+      },
+      {
+        "has_instances": true,
+        "name": "modify_children",
+        "display_name": "Create, edit, and delete child groups",
+        "description": "Create, edit, and delete child groups below a given node group"
+      },
+      {
+        "has_instances": true,
+        "name": "edit_child_rules",
+        "display_name": "Edit child group rules",
+        "description": "Edit rules of all groups below a given node group"
+      },
+      {
+        "has_instances": true,
+        "name": "edit_classification",
+        "display_name": "Edit classes, parameters, and variables",
+        "description": "Edit a node group's classification and variables"
+      }
+    ]
+  },
+  {
+    "object_type": "tokens",
+    "display_name": "Tokens",
+    "description": "A token that allows access as a given user",
+    "actions": [
+      {
+        "has_instances": false,
+        "name": "override_lifetime",
+        "display_name": "Override default expiry",
+        "description": "Override the default token expiry set in the configuration file"
+      }
+    ]
+  },
+  {
+    "object_type": "orchestration",
+    "display_name": "Orchestration",
+    "description": "Orchestration",
+    "actions": [
+      {
+        "has_instances": false,
+        "name": "use",
+        "display_name": "Run Puppet from Orchestrator",
+        "description": "Run Puppet on agent nodes using the Application Orchestrator"
+      }
+    ]
+  },
+  {
+    "object_type": "environment",
+    "display_name": "Puppet environment",
+    "description": "Puppet environment",
+    "actions": [
+      {
+        "has_instances": true,
+        "name": "deploy_code",
+        "display_name": "Deploy code",
+        "description": "Deploy code to a Puppet environment"
+      }
+    ]
+  },
+  {
+    "object_type": "nodes",
+    "display_name": "Nodes",
+    "description": "Edit and view data from PuppetDB",
+    "actions": [
+      {
+        "has_instances": false,
+        "name": "edit_data",
+        "display_name": "Edit node data from PuppetDB",
+        "description": "The ability to edit node data imported from PuppetDB"
+      },
+      {
+        "has_instances": false,
+        "name": "view_data",
+        "display_name": "View node data from PuppetDB",
+        "description": "The ability to view node data imported from PuppetDB"
+      }
+    ]
+  },
+  {
+    "object_type": "console_page",
+    "display_name": "Console",
+    "description": "Pages in Puppet console",
+    "actions": [
+      {
+        "has_instances": false,
+        "name": "view",
+        "display_name": "View",
+        "description": "View a console page"
+      }
+    ]
+  },
+  {
+    "object_type": "directory_service",
+    "display_name": "Directory service",
+    "description": "Authenticates remote users",
+    "actions": [
+      {
+        "has_instances": false,
+        "name": "edit",
+        "display_name": "View, edit, and test",
+        "description": "View, edit, and test the directory service settings"
+      }
+    ]
+  },
+  {
+    "object_type": "cert_requests",
+    "display_name": "Certificate requests",
+    "description": "Certificate requests made to the Puppet Certificate Authority",
+    "actions": [
+      {
+        "has_instances": false,
+        "name": "accept_reject",
+        "display_name": "Accept and reject",
+        "description": "Accept and reject certificate requests"
+      }
+    ]
+  },
+  {
+    "object_type": "users",
+    "display_name": "Users",
+    "description": "Puppet Enterprise console users",
+    "actions": [
+      {
+        "has_instances": true,
+        "name": "disable",
+        "display_name": "Revoke",
+        "description": "Revoke a user"
+      },
+      {
+        "has_instances": true,
+        "name": "edit",
+        "display_name": "Edit",
+        "description": "Edit user information and delete user"
+      },
+      {
+        "has_instances": false,
+        "name": "create",
+        "display_name": "Create",
+        "description": "Create a local user"
+      },
+      {
+        "has_instances": true,
+        "name": "reset_password",
+        "display_name": "Reset password",
+        "description": "Reset a user's password"
+      }
+    ]
+  }
+]

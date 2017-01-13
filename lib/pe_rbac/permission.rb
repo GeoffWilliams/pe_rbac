@@ -6,7 +6,8 @@ module PeRbac
     # Permissions
     #
     def self.get_permissions()
-      PeRbac::Core::request(:get, "/types")
+      resp = PeRbac::Core::request(:get, "/types")
+      resp ? JSON.parse(resp.body) : false
     end
   end
 end

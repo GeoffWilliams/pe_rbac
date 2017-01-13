@@ -27,27 +27,6 @@ module PeRbac
       found
     end
 
-
-    # # get the role id for a display name
-    # # eg ['Code Deployers', 'blah'] => [4,8]
-    # def self.get_role_ids(display_names)
-    #   if ! display_names.is_a? Array
-    #     display_names = [display_names]
-    #   end
-    #   roles = get_roles
-    #   ids = []
-    #   display_names.each { |display_name|
-    #     found=get_role_id(display_name)
-    #     #if !found
-    #     #  raise("RBAC role '#{display_name}' not found")
-    #     #end
-    #     if found
-    #       ids.push(found)
-    #     end
-    #   }
-    #   ids
-    # end
-
     # CREATE
     def self.ensure_role(display_name, description, permissions=[], user_ids=[])
       if get_role_id(display_name)

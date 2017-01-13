@@ -85,7 +85,7 @@ module FakeRbacService
 
     # get all permissions
     get '/rbac-api/v1/types' do
-
+      read_json('get', 'types')
     end
 
     post '/rbac-api/v1/auth/token' do
