@@ -45,11 +45,12 @@ module PeRbac
         "display_name"  => display_name,
         "description"   => description,
       }
-      PeRbac::Core::request(:post, '/roles', role)
+      PeRbac::Core::request(:post, '/roles', role) ? true : false
     end
 
     def self.update_role(display_name, description=nil, permissions=nil, user_ids=nil, group_ids=nil)
       role_id = get_role_id(display_name)
+      status = false
       if role_id
         role = get_role(role_id)
         role['display_name']  = display_name ? display_name : role['display_name']
@@ -59,9 +60,9 @@ module PeRbac
         role['group_ids']     = group_ids ? group_ids : role['group_ids']
 
         PeRbac::Core::request(:put, "/roles/#{role_id}", role)
-      else
-        raise("No such role exists: #{display_name} create it first or use ensure_role")
+        status = true
       end
+      status
     end
   end
 end

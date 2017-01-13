@@ -30,10 +30,35 @@ describe PeRbac::Role do
     expect(rid).to eq false
   end
 
+  it "creates new role correctly" do
+    result = PeRbac::Role::create_role(
+      'display_name',
+      'description',
+    )
+    expect(result).to be true
+  end
 
-  # def self.ensure_role(display_name, description, permissions=[], user_ids=[])
-  # def self.create_role(display_name, description=display_name, permissions=[], user_ids=[], group_ids=[])
-  # def self.update_role(display_name, description=nil, permissions=nil, user_ids=nil, group_ids=nil)
-  #
+  it "updates existing role correctly" do
+    result = PeRbac::Role::update_role(
+      'Operators',
+      'description',
+    )
+    expect(result).to be true
+  end
 
+  it "returns false when updating non-existant role" do
+    result = PeRbac::Role::update_role(
+      'not_here',
+      'description',
+    )
+    expect(result).to be false
+  end
+
+  it "ensures roles are in desired state correctly" do
+    result = PeRbac::Role::ensure_role('Operators', 'admin')
+    expect(result).to be true
+
+    result = PeRbac::Role::ensure_role('not_here', 'not_here')
+    expect(result).to be true
+  end
 end
