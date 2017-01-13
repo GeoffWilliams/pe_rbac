@@ -23,9 +23,8 @@ Escort::App.create do |app|
       password  = options[:global][:commands][cmd][:options][:password]
       email     = options[:global][:commands][cmd][:options][:email]
 
-      role_ids = PeRbac::Role::get_role_ids(role)
-      # always returns an array even though there should only be one match
-      role_data = PeRbac::Role::get_role(role_ids.first)
+      role_id = PeRbac::Role::get_role_id(role)
+      role_data = PeRbac::Role::get_role(role_id)
 
       perms = [{
         "object_type" => "tokens",
@@ -40,7 +39,7 @@ Escort::App.create do |app|
         PeRbac::Core::merge_permissions(role_data['permissions'], perms)
       )
 
-      PeRbac::User::ensure_user(username, email, username, password, role_ids)
+      PeRbac::User::ensure_user(username, email, username, password, role_id)
       PeRbac::Action::login(username, password, lifetime)
     end
     command.options do |opts|
@@ -107,10 +106,10 @@ Escort::App.create do |app|
       )
 
       # get the ID of the newly created role
-      role_ids    = PeRbac::Role::get_role_ids(role)
+      role_id = PeRbac::Role::get_role_id(role)
 
       # join a user to the role
-      PeRbac::User::ensure_user(username, email, username, password, role_ids)
+      PeRbac::User::ensure_user(username, email, username, password, role_id)
 
       # Generate and output the token
       token = PeRbac::Action::token(username, password, lifetime)

@@ -22,7 +22,8 @@ module PeRbac
     end
 
     def self.get_user(id)
-      JSON.parse(PeRbac::Core::request(:get, "/users/#{id}").body)
+      resp = PeRbac::Core::request(:get, "/users/#{id}")
+      resp ? JSON.parse(resp.body) : false
     end
 
     def self.ensure_user(login, email, display_name, password=nil, role_ids=[])
@@ -41,11 +42,12 @@ module PeRbac
 
     def self.create_user(login, email, display_name, password=nil, role_ids=[])
       # completely different to what the PE console sends... :/
+      # Elegantly convert role_ids to an array if it isn't one already
       user={
         "login"         => login,
         "email"         => email,
         "display_name"  => display_name,
-        "role_ids"      => role_ids,
+        "role_ids"      => Array(role_ids),
       }
 
       if password

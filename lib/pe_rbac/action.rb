@@ -26,8 +26,8 @@ module PeRbac
       if lifetime
         payload["lifetime"] = lifetime
       end
-
-      JSON.parse(PeRbac::Core::request(:post, '/auth/token', payload))['token']
+      resp = PeRbac::Core::request(:post, '/auth/token', payload)
+      resp ? JSON.parse(resp.body)['token'] : false
     end
 
     def self.login(login, password, lifetime=false)

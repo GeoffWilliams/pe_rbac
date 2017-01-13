@@ -1,3 +1,4 @@
+require 'escort'
 module PeRbac
   module Core
     @@ssldir = '/etc/puppetlabs/puppet/ssl'
@@ -58,7 +59,7 @@ module PeRbac
         _payload=nil
       end
       begin
-        RestClient::Request.execute(
+        result = RestClient::Request.execute(
           method: method,
           url: url,
           ssl_ca_file: conf[:cacert],
@@ -72,8 +73,10 @@ module PeRbac
         Escort::Logger.error.error url
         Escort::Logger.error.error _payload
         Escort::Logger.error.error e.response
-        raise "API Error"
+        result = false
       end
+
+      result
     end
 
 

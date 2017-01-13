@@ -35,16 +35,16 @@ begin
   # get an API token
   resp = PeRbac::token('test', '12345678')
   puts resp
-  
+
   # create or update a user with role access and write a token
-  role_ids = PeRbac::get_role_ids('Code Deployers')
+  role_id = PeRbac::get_role_id('Code Deployers')
   perms = {
     "objectType" => "tokens",
     "action"     => "override_lifetime",
     "instance"   => nil,
   }
   PeRbac::update_role('Code Deployers', permissions=perms)
-  PeRbac::ensure_user('psquared', 'root@localhost', 'psquared', 'changeme', role_ids)
+  PeRbac::ensure_user('psquared', 'root@localhost', 'psquared', 'changeme', role_id)
   PeRbac::login('psquared', 'changeme', '10y')
 
   # what permissions are there?

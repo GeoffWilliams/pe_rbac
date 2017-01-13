@@ -26,7 +26,11 @@ module FakeRbacService
           found = j
         end
       }
-      found.to_json
+      if found
+        payload = found.to_json
+      else
+        status 404
+      end
     end
 
     # create a user
@@ -39,7 +43,7 @@ module FakeRbacService
 
     end
 
-    # generate a reset tokens]
+    # generate a reset token
     post '/rbac-api/v1/users/:id/password/reset' do
 
     end
@@ -58,11 +62,15 @@ module FakeRbacService
     get '/rbac-api/v1/roles/:id' do
       found = nil
       JSON.parse(read_json('get', 'roles')).each { |j|
-        if j['id'] == params[:id]
+        if j['id'].to_s == params[:id]
           found = j
         end
       }
-      found
+      if found
+        payload = found.to_json
+      else
+        status 404
+      end
     end
 
     # create a role
@@ -81,7 +89,17 @@ module FakeRbacService
     end
 
     post '/rbac-api/v1/auth/token' do
+      json = JSON.parse(request.body.read)
+      login     = json['login']
+      password  = json['password']
 
+      if login == "admin"
+        res = {"token" => "DEADBEEF"}
+      else
+        status 401
+      end
+
+      res.to_json
     end
   end
 

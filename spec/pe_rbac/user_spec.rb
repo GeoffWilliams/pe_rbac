@@ -24,4 +24,27 @@ describe PeRbac::User do
     expect(user).not_to be nil
     expect(user['login']).to eq'api_user'
   end
+
+  it "returns false looking up non-existant user by id" do
+    user = PeRbac::User::get_user('xxxxxxxx')
+
+    # check we got a response the same size as the one in our json file
+    expect(user).to be false
+  end
+
+  it "returns the correct ID for given user" do
+    uid = PeRbac::User::get_user_id('admin')
+
+    expect(uid).to eq '42bf351c-f9ec-40af-84ad-e976fec7f4bd'
+  end
+
+  it "returns false for non existant user" do
+    uid = PeRbac::User::get_user_id('not_here')
+
+    expect(uid).to eq false
+  end
+
+  # ensure_user
+  # create_user
+  # update_user
 end
