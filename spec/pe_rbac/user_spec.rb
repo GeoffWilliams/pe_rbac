@@ -44,7 +44,60 @@ describe PeRbac::User do
     expect(uid).to eq false
   end
 
-  # ensure_user
   # create_user
+  it "creates a normal user correctly" do
+    result = PeRbac::User::create_user(
+      'login',
+      'email',
+      'display_name',
+      'password',
+      4
+    )
+    expect(result).to be true
+  end
+
   # update_user
+  it "updates an existing user correctly" do
+    result = PeRbac::User::update_user(
+      'admin',
+      'emailA',
+      'display_nameA',
+      5,
+    )
+    expect(result).to be true
+  end
+
+  it "returns false attempting to update non-existant user" do
+    result = PeRbac::User::update_user(
+      'not_here',
+      'email',
+      'display_name',
+      5,
+    )
+    expect(result).to be false
+  end
+
+  # ensure_user
+  it "ensures users are in desired state correctly" do
+    # existing user - should indicate success
+    result = PeRbac::User::ensure_user(
+      'admin',
+      'email',
+      'display_name',
+      'password',
+      4
+    )
+    expect(result).to be true
+
+    # new user - should indicate success
+    result = PeRbac::User::ensure_user(
+      'not_here',
+      'email',
+      'display_name',
+      'password',
+      4
+    )
+    expect(result).to be true
+  end
+
 end

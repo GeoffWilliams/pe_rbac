@@ -1,4 +1,5 @@
 require 'pe_rbac/core'
+require 'pe_rbac/action'
 
 module PeRbac
   module User
@@ -31,7 +32,7 @@ module PeRbac
         # existing user
         update_user(login, email, display_name, role_ids)
         if password
-          reset_password(login, password)
+          PeRbac::Action::reset_password(login, password)
         end
       else
         # new user
@@ -54,22 +55,25 @@ module PeRbac
         user["password"] = password
       end
 
-      PeRbac::Core::request(:post, '/users', user)
+      PeRbac::Core::request(:post, '/users', user) ? true : false
     end
 
     def self.update_user(login, email=nil, display_name=nil, role_ids=nil, is_revoked=nil)
       user = get_user(get_user_id(login))
-      if ! user['remote']
-        # trade-off for auto id lookup is that you cant change logins...
-        user['login'] = login ? login : user['login']
-        user['email'] = email ? email : user['email']
-        user['display_name'] = display_name ? display_name : user['display_name']
+      status = false
+      if user
+        if ! user['remote']
+          # trade-off for auto id lookup is that you cant change logins...
+          user['login'] = login ? login : user['login']
+          user['email'] = email ? email : user['email']
+          user['display_name'] = display_name ? display_name : user['display_name']
+        end
+        user['role_ids'] = role_ids ? role_ids : user['role_ids']
+        user['is_revoked'] = (! is_revoked.nil?) ? is_revoked : user['is_revoked']
+
+        status = PeRbac::Core::request(:put, "/users/#{user['id']}", user) ? true : false
       end
-      user['role_ids'] = role_ids ? role_ids : user['role_ids']
-      user['is_revoked'] = (! is_revoked.nil?) ? is_revoked : user['is_revoked']
-
-      PeRbac::Core::request(:put, "/users/#{user['id']}", user)
+      status
     end
-
   end
 end

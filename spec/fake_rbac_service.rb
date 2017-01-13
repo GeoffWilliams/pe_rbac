@@ -35,22 +35,22 @@ module FakeRbacService
 
     # create a user
     post '/rbac-api/v1/users' do
-
+      status 201
     end
 
     # update a user
     put '/rbac-api/v1/users/:id' do
-
+      status 200
     end
 
     # generate a reset token
     post '/rbac-api/v1/users/:id/password/reset' do
-
+      "RESET_TOKEN_OK"
     end
 
     # reset using a token
     post '/rbac-api/v1/auth/reset' do
-
+      "RESET_USED_TOKEN_OK"
     end
 
     # list all roles
@@ -75,12 +75,12 @@ module FakeRbacService
 
     # create a role
     post '/rbac-api/v1/roles' do
-
+      status 201
     end
 
     # update a role
     put '/rbac-api/v1/roles/:id' do
-
+      status 200
     end
 
     # get all permissions
