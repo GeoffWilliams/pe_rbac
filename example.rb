@@ -28,8 +28,8 @@ begin
   resp = PeRbac::update_user('test','test@test.com.au', 'mrs test test')
   puts resp.code
 
-  # change password
-  resp = PeRbac::change_password('test','12345678')
+  # reset/change password
+  resp = PeRbac::reset_password('test','12345678')
   puts resp.code
 
   # get an API token

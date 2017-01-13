@@ -3,8 +3,7 @@ require 'pe_rbac/action'
 require 'fakefs/safe'
 describe PeRbac::Action do
   it "changes the password successfully" do
-
-    expect(PeRbac::Action::change_password('admin', 'cheeseburger')).to be true
+    expect(PeRbac::Action::reset_password('admin', 'cheeseburger')).to be true
   end
 
   it "obtains the correct token" do
@@ -34,7 +33,5 @@ describe PeRbac::Action do
     end
 
   end
-  # token
-  # login
-  # reset_password
+
 end

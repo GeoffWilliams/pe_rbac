@@ -31,7 +31,7 @@ module PeRbac
         # existing user
         update_user(login, email, display_name, role_ids)
         if password
-          change_password(login, password)
+          reset_password(login, password)
         end
       else
         # new user
