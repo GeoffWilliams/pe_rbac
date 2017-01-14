@@ -28,7 +28,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency  'simplecov', "0.12.0"
 
+  # required at runtime but provided by PE
+  spec.add_development_dependency "facter", "2.4.6"
+
+
   spec.add_runtime_dependency "rest-client", "2.0.0"
   spec.add_runtime_dependency "escort", "0.4.0"
-  spec.add_runtime_dependency "facter", "2.4.6"
 end
