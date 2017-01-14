@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
-require 'simplecov'
-SimpleCov.start
+# results in overall error exit status, disable for now
+#require 'simplecov'
+#SimpleCov.start
 
 require "pe_rbac"
 require "pe_rbac/core"
