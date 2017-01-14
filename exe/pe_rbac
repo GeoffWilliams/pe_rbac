@@ -21,6 +21,9 @@ require 'pe_rbac/role'
 require 'pe_rbac/user'
 require 'escort'
 
+# display help if nothing specified
+ARGV.push('-h') if ARGV.empty?
+
 Escort::App.create do |app|
   app.version PeRbac::VERSION
   app.summary "pe_rbac"
