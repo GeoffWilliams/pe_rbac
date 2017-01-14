@@ -83,7 +83,7 @@ module PeRbac
           user['email'] = email ? email : user['email']
           user['display_name'] = display_name ? display_name : user['display_name']
         end
-        user['role_ids'] = role_ids ? role_ids : user['role_ids']
+        user['role_ids'] = role_ids ? Array(role_ids) : user['role_ids']
         user['is_revoked'] = (! is_revoked.nil?) ? is_revoked : user['is_revoked']
 
         status = PeRbac::Core::request(:put, "/users/#{user['id']}", user) ? true : false

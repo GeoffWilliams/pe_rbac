@@ -55,8 +55,8 @@ module PeRbac
     def self.create_role(display_name, description=display_name, permissions=[], user_ids=[], group_ids=[])
       role = {
         "permissions"   => permissions,
-        "user_ids"      => user_ids,
-        "group_ids"     => group_ids,
+        "user_ids"      => Array(user_ids),
+        "group_ids"     => Array(group_ids),
         "display_name"  => display_name,
         "description"   => description,
       }
@@ -71,8 +71,8 @@ module PeRbac
         role['display_name']  = display_name ? display_name : role['display_name']
         role['description']   = description ? display_name : role['description']
         role['permissions']   = permissions ? permissions : role['permissions']
-        role['user_ids']      = user_ids ? user_ids : role['user_ids']
-        role['group_ids']     = group_ids ? group_ids : role['group_ids']
+        role['user_ids']      = user_ids ? Array(user_ids) : role['user_ids']
+        role['group_ids']     = group_ids ? Array(group_ids) : role['group_ids']
 
         PeRbac::Core::request(:put, "/roles/#{role_id}", role)
         status = true
