@@ -1,8 +1,18 @@
+[![Build Status](https://travis-ci.org/GeoffWilliams/pe_rbac.svg?branch=master)](https://travis-ci.org/GeoffWilliams/pe_rbac)
 # PeRbac
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/pe_rbac`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem lets you drive the Puppet Enterprise RBAC API from the command line or ruby.  While you can of-course do the same thing using the [pltraining/rbac](https://forge.puppet.com/pltraining/rbac) forge module, this requires that you have:
+* Write-access to Puppet's git repository
+* Code Manager setup to read from git
+* A desire to continually enforce your RBAC changes
 
-TODO: Delete this and the text above, and describe your gem
+Since this is often not the case, this gem provides a command line to do things like reset passwords or setup Code Manager with a single command.
+
+## Features/Commands
+* Setup Code Manager
+* Setup Read-only PuppetDB access
+* Reset passwords
+* Ruby API
 
 ## Installation
 
@@ -55,11 +65,8 @@ pe_rbac reset_password --username foo --password 12345678
 Reset the password for the `foo` user to `12345678`
 
 ### Ruby API
-An *IN FLUX* Ruby API exists, see code for more info.  This WILL change (well it
-will if I do any more development work on this...) - expect module names,
-functions, etc. to change.  In particular, I'm planning:
-* Sub-modules/file reorgs
-* tests!
+A Ruby API exists, see code for more info.  For the moment this code does what I want, but may extend to cover new features as requred.
+
 
 ## Development
 
