@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.summary       = %q{Ruby API for Puppet Enterprise RBAC}
   spec.description   = %q{Programatically do stuff with Puppet Enterprise RBAC}
   spec.homepage      = "https://github.com/geoffwilliams/pe_rbac"
-  spec.license       = "MIT"
+  spec.license       = "Apache 2.0"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.bindir        = "exe"
