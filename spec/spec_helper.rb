@@ -13,10 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
-# results in overall error exit status, disable for now
+# code-coverage not requires new escort: https://github.com/skorks/escort/issues/13
 #require 'simplecov'
-#SimpleCov.start
+#SimpleCov.start do
+#  add_filter '/spec/'
+#end
+$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 
 require "pe_rbac"
 require "pe_rbac/core"
