@@ -171,7 +171,7 @@ Escort::App.create do |app|
   app.command :reset_password do |command|
     command.summary "Reset a logon password"
     command.description "Obtain a reset token and then reset a password"
-    command.action do |options, arguments|\
+    command.action do |options, arguments|
       # fixme - obtain automatically
       cmd         = :reset_password
       username    = options[:global][:commands][cmd][:options][:username]
@@ -190,6 +190,13 @@ Escort::App.create do |app|
         :long     => '--password',
         :default  => 'changeme'
       )
+    end
+  end
+
+  app.command :show_permissions do |command|
+    command.summary "Show available permissions"
+    command.action do |options, arguments|
+      PeRbac::Action::show_permissions(username, password)
     end
   end
 

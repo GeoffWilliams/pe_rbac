@@ -15,6 +15,8 @@
 
 require 'pe_rbac/core'
 require 'pe_rbac/user'
+reqiure 'pe_rbac/permissions'
+
 module PeRbac
   module Action
 
@@ -63,6 +65,10 @@ module PeRbac
       status
     end
 
+    def self.show_permissions
+      resp = PeRbac::Permission::get_permissions
+      puts resp.to_s
+    end
 
   end
 end
