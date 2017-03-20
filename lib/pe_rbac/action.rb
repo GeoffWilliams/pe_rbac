@@ -15,7 +15,7 @@
 
 require 'pe_rbac/core'
 require 'pe_rbac/user'
-reqiure 'pe_rbac/permissions'
+require 'pe_rbac/permissions'
 
 module PeRbac
   module Action
