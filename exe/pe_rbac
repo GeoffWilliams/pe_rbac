@@ -196,7 +196,7 @@ Escort::App.create do |app|
   app.command :show_permissions do |command|
     command.summary "Show available permissions"
     command.action do |options, arguments|
-      PeRbac::Action::show_permissions(username, password)
+      PeRbac::Action::show_permissions()
     end
   end
 
