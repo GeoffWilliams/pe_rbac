@@ -16,6 +16,7 @@
 require 'pe_rbac/core'
 require 'pe_rbac/user'
 require 'pe_rbac/permission'
+require 'json'
 
 module PeRbac
   module Action
@@ -67,7 +68,7 @@ module PeRbac
 
     def self.show_permissions
       resp = PeRbac::Permission::get_permissions
-      puts resp.to_s
+      puts JSON.pretty_generate(resp)
     end
 
   end
