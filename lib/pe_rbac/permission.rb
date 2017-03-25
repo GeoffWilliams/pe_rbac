@@ -24,5 +24,33 @@ module PeRbac
       resp = PeRbac::Core::request(:get, "/types")
       resp ? JSON.parse(resp.body) : false
     end
+
+    # Not all requested permissions may be avaiable per use (change between
+    # versions).  To mitigate this, requeste the list of all valid permissions
+    # and remove any permissions that are not in the list from the final list of
+    # permissions to request
+    def self.safe_permissions(want_perms)
+      safe_perms  = []
+      valid_perms = Permission::get_permissions()
+
+      want_perms.each { |wp|
+        valid = false
+        valid_perms.each { |vp|
+          if  wp['object_type'] == vp['object_type']
+            vp['actions'].each { |va|
+              # scan for valid action inside object permissions
+              if wp['action'] == va['name']
+                valid = true
+              end
+            }
+          end
+        }
+        if valid
+          safe_perms << wp
+        end
+      }
+
+      safe_perms
+    end
   end
 end

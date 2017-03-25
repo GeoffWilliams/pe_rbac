@@ -53,8 +53,10 @@ module PeRbac
 
     # https://docs.puppet.com/pe/latest/rbac_roles_v1.html#post-roles
     def self.create_role(display_name, description=display_name, permissions=[], user_ids=[], group_ids=[])
+      safe_perms = Permission::safe_permissions(permissions)
+
       role = {
-        "permissions"   => permissions,
+        "permissions"   => safe_perms,
         "user_ids"      => Array(user_ids),
         "group_ids"     => Array(group_ids),
         "display_name"  => display_name,
@@ -65,12 +67,13 @@ module PeRbac
 
     def self.update_role(display_name, description=nil, permissions=nil, user_ids=nil, group_ids=nil)
       role_id = get_role_id(display_name)
+      safe_perms = Permission::safe_permissions(permissions)
       status = false
       if role_id
         role = get_role(role_id)
         role['display_name']  = display_name ? display_name : role['display_name']
         role['description']   = description ? display_name : role['description']
-        role['permissions']   = permissions ? permissions : role['permissions']
+        role['permissions']   = safe_perms ? safe_perms : role['permissions']
         role['user_ids']      = user_ids ? Array(user_ids) : role['user_ids']
         role['group_ids']     = group_ids ? Array(group_ids) : role['group_ids']
 
@@ -79,5 +82,6 @@ module PeRbac
       end
       status
     end
+
   end
 end
