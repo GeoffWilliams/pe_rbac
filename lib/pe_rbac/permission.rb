@@ -33,23 +33,24 @@ module PeRbac
       safe_perms  = []
       valid_perms = Permission::get_permissions()
 
-      want_perms.each { |wp|
-        valid = false
-        valid_perms.each { |vp|
-          if  wp['object_type'] == vp['object_type']
-            vp['actions'].each { |va|
-              # scan for valid action inside object permissions
-              if wp['action'] == va['name']
-                valid = true
-              end
-            }
+      if want_perms
+        want_perms.each { |wp|
+          valid = false
+          valid_perms.each { |vp|
+            if  wp['object_type'] == vp['object_type']
+              vp['actions'].each { |va|
+                # scan for valid action inside object permissions
+                if wp['action'] == va['name']
+                  valid = true
+                end
+              }
+            end
+          }
+          if valid
+            safe_perms << wp
           end
         }
-        if valid
-          safe_perms << wp
-        end
-      }
-
+      end
       safe_perms
     end
   end
