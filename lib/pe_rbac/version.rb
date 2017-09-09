@@ -1,5 +1,6 @@
 #
-# Copyright 2016 Geoff Williams for Puppet Inc.
+# Copyright 2017 Declarative Systems PTY LTD
+# Copyright 2016 Puppet Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,5 +15,5 @@
 # limitations under the License.
 
 module PeRbac
-  VERSION = "0.5.0"
+  VERSION = "1.0.0"
 end

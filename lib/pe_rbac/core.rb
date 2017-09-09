@@ -1,5 +1,6 @@
 #
-# Copyright 2016 Geoff Williams for Puppet Inc.
+# Copyright 2017 Declarative Systems PTY LTD
+# Copyright 2016 Puppet Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,6 +15,8 @@
 # limitations under the License.
 
 require 'escort'
+require 'excon'
+
 module PeRbac
   module Core
     @@ssldir = '/etc/puppetlabs/puppet/ssl'
@@ -74,23 +77,24 @@ module PeRbac
         _payload=nil
       end
       begin
-        result = RestClient::Request.execute(
-          method: method,
-          url: url,
-          ssl_ca_file: conf[:cacert],
-          ssl_client_cert: OpenSSL::X509::Certificate.new(File.read(conf[:cert])),
-          ssl_client_key: OpenSSL::PKey::RSA.new(File.read(conf[:key])),
-          ssl_version: :TLSv1_2,
-          headers: {:content_type => :json, :accept => :json},
-          payload: _payload,
-        )
-      rescue RestClient::ExceptionWithResponse => e
-        Escort::Logger.error.error url
-        Escort::Logger.error.error _payload
-        Escort::Logger.error.error e.response
+        connection = Excon.new(url,
+                               client_cert: conf[:cert],
+                               client_key: conf[:key],
+                               ssl_ca_file: conf[:cacert],
+                               ssl_version: :TLSv1_2)
+        result = connection.request(method: method,
+                                    headers: {content_type: "application/json", accept: "application/json"},
+                                    body: _payload)
+        if result.status >= 300
+          # There doesn't seem to be a built-in way to check for error codes
+          # without individually specifying each allowable 'good' status (:expect..)
+          # so lets just check for anything that smells bad
+          result = false
+        end
+      rescue Excon::Error => e
+        Escort::Logger.error.error "Error (#{e.message}) for: #{url}, #{_payload}"
         result = false
       end
-
       result
     end
 

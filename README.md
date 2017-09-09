@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/GeoffWilliams/pe_rbac.svg?branch=master)](https://travis-ci.org/GeoffWilliams/pe_rbac)
+[![Build Status](https://travis-ci.org/declarativesystems/pe_rbac.svg?branch=master)](https://travis-ci.org/declarativesystems/pe_rbac)
 # PeRbac
 
 This gem lets you drive the Puppet Enterprise RBAC API from the command line or ruby.  While you can of-course do the same thing using the [pltraining/rbac](https://forge.puppet.com/pltraining/rbac) forge module, this requires that you have:
@@ -15,11 +15,6 @@ Since this is often not the case, this gem provides a command line to do things 
 * Ruby API
 
 ## Installation
-
-Gem dependencies need G++ amongst other things.  Easiest way to proceed:
-```
-yum groupinstall 'Development Tools'
-```
 
 Add this line to your application's Gemfile:
 
@@ -80,10 +75,4 @@ After checking out the repo, run `bin/setup` to install dependencies. You can al
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/GeoffWilliams/pe_rbac.
-
-
-## License
-
-The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+Bug reports and pull requests are welcome on GitHub at https://github.com/declarativesystems/pe_rbac.
