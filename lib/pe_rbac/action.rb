@@ -55,7 +55,7 @@ module PeRbac
       status = false
       if user_id
         # get password reset token
-        reset_token = PeRbac::Core::request(:post, "/users/#{user_id}/password/reset")
+        reset_token = PeRbac::Core::request(:post, "/users/#{user_id}/password/reset").body
 
         # reset password
         PeRbac::Core::request(:post, '/auth/reset', {

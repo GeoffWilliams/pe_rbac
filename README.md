@@ -36,8 +36,9 @@ Or install it yourself as:
 ```
 pe_rbac  code_manager --password t0ps3cret
 ```
-Right now, the command line just provides a means to setup code manager.  If you
-want to do more then this, you must use the Ruby API
+Generate a token which can be used to deploy code using Code Manager.  
+
+* If you omit `--password`, then a random password will be chosen for you.
 
 ### Generating a token to use for ro/rw access to PuppetDB API
 ```
@@ -47,6 +48,8 @@ pe_rbac puppetdb --password t0ps3cret
 # read-write access
 pe_rbac puppetdb --allow-write --password t0ps3cret
 ```
+
+* If you omit `--password`, then a random password will be chosen for you.
 
 ### Resetting a user password
 ```
@@ -58,6 +61,8 @@ Change the password for `admin` to `changeme`
 pe_rbac reset_password --username foo --password 12345678
 ```
 Reset the password for the `foo` user to `12345678`
+
+* If you omit `--password`, then a random password will be chosen for you.
 
 ### Ruby API
 A Ruby API exists, see code for more info.  For the moment this code does what I want, but may extend to cover new features as requred.

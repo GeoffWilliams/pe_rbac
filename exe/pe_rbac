@@ -19,7 +19,9 @@ require 'pe_rbac/action'
 require 'pe_rbac/core'
 require 'pe_rbac/role'
 require 'pe_rbac/user'
+require 'pe_rbac/version'
 require 'escort'
+require 'securerandom'
 
 # display help if nothing specified
 ARGV.push('-h') if ARGV.empty?
@@ -67,9 +69,9 @@ Escort::App.create do |app|
         :default => 'deploy'
       )
       opts.opt(:password,
-        'Initial password for deploy user',
+        'Initial password for deploy user (default is to randomly generate)',
         :long    => '--password',
-        :default => 'changeme'
+        :default => SecureRandom.hex
       )
       opts.opt(:email,
         'Email address',
@@ -142,7 +144,7 @@ Escort::App.create do |app|
       opts.opt(:password,
         'Initial password for deploy user',
         :long     => '--password',
-        :default  => 'changeme'
+        :default  => SecureRandom.hex,
       )
       opts.opt(:email,
         'Email address',
@@ -188,7 +190,7 @@ Escort::App.create do |app|
       opts.opt(:password,
         'Password to reset to',
         :long     => '--password',
-        :default  => 'changeme'
+        :default  => SecureRandom.hex,
       )
     end
   end

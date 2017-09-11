@@ -44,8 +44,8 @@ begin
     "instance"   => nil,
   }
   PeRbac::update_role('Code Deployers', permissions=perms)
-  PeRbac::ensure_user('psquared', 'root@localhost', 'psquared', 'changeme', role_id)
-  PeRbac::login('psquared', 'changeme', '10y')
+  PeRbac::ensure_user('psquared', 'root@localhost', 'psquared', 't0ps3cret', role_id)
+  PeRbac::login('psquared', 't0ps3cret', '10y')
 
   # what permissions are there?
   resp = PeRbac::get_permissions

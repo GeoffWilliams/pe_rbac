@@ -83,12 +83,15 @@ module PeRbac
                                ssl_ca_file: conf[:cacert],
                                ssl_version: :TLSv1_2)
         result = connection.request(method: method,
-                                    headers: {content_type: "application/json", accept: "application/json"},
+                                    headers: {"content-type"=> "application/json", "accept"=>"application/json"},
                                     body: _payload)
-        if result.status >= 300
+        if result.status >= 400
           # There doesn't seem to be a built-in way to check for error codes
           # without individually specifying each allowable 'good' status (:expect..)
-          # so lets just check for anything that smells bad
+          # so lets just check for anything that smells bad.  Note that the API
+          # sometimes gives us a 3xx code but there doesn't seem to be a need
+          # for us to follow the redirection...
+          Escort::Logger.error.error "Error #{result.status} encountered for '#{url}':  Requested '#{_payload}', got '#{result.body}'"
           result = false
         end
       rescue Excon::Error => e
