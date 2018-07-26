@@ -21,8 +21,8 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.12"
   spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "sinatra", "1.4.7"
-  spec.add_development_dependency "webrick", "1.3.1"
+  spec.add_development_dependency "sinatra", "1.4.8"
+  spec.add_development_dependency "webrick", "1.4.2"
   spec.add_development_dependency "rack", "1.6.5"
   spec.add_development_dependency "fakefs", "0.10.1"
   spec.add_development_dependency "rspec", "~> 3.0"
