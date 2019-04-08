@@ -131,8 +131,15 @@ module FakeRbacService
         :SSLPrivateKey        => OpenSSL::PKey::RSA.new(          File.open("./spec/fixtures/ssl/private_keys/localhost.pem").read),
         :SSLCertName          => [ [ "CN",'localhost' ] ]
       }
-
+      begin
       Rack::Handler::WEBrick.run FakeRbacService, webrick_options
+      rescue IOError => e
+        # we get an exception as ruby exits and STDIO has gone away
+        # so catch this type of error (only) and exit quietly...
+        if ! (e.message =~ /closed/)
+          puts e.backtrace
+        end
+      end
     end
   end
   # def self.run!
