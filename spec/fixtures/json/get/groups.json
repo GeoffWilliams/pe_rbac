@@ -1,0 +1,28 @@
+[
+  {
+    "id": "df374820-9a78-46e3-85ee-726793923f23",
+    "login": "test_group",
+    "display_name": "test_group",
+    "role_ids": [
+      2,
+      1
+    ],
+    "user_ids": [],
+    "is_group": true,
+    "is_remote": true,
+    "is_superuser": false
+  },
+  {
+    "id": "9cfb0f32-df90-4900-8212-ed2b31a4340c",
+    "login": "admins",
+    "display_name": "admins",
+    "role_ids": [
+      2,
+      1
+    ],
+    "user_ids": [],
+    "is_group": true,
+    "is_remote": true,
+    "is_superuser": false
+  }
+]

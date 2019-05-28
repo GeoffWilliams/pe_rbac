@@ -51,6 +51,28 @@ begin
   resp = PeRbac::get_permissions
   puts resp.body
 
+  # Manage groups
+  require 'pe_rbac/group'
+  require 'json'
+
+  # Get all groups
+  puts JSON.pretty_generate PeRbac::Group.get_groups
+
+  # Create group
+  resp = PeRbac::Group.ensure_group('test-group', 2)
+  puts resp.code
+
+  # Get one group
+  test_group = PeRbac::Group.get_group(PeRbac::Group.get_group_id('test-group'))
+
+  # Update role in group
+  resp = PeRbac::Group.ensure_group('test-group', [1,2])
+  puts resp.code
+
+  # Remove group
+  resp = PeRbac::Group.delete_group('test-group')
+  puts resp.code
+
 rescue Exception => e
   puts e.message
   puts e.backtrace
