@@ -116,6 +116,36 @@ module FakeRbacService
 
       res.to_json
     end
+
+    # All groups
+    get '/rbac-api/v1/groups' do
+      read_json('get', 'groups')
+    end
+
+    # a specific user
+    get '/rbac-api/v1/groups/:id' do
+      found = nil
+      JSON.parse(read_json('get', 'groups')).each { |j|
+        if j['id'] == params[:id]
+          found = j
+        end
+      }
+      if found
+        payload = found.to_json
+      else
+        status 404
+      end
+    end
+
+    # create a user
+    post '/rbac-api/v1/groups' do
+      status 201
+    end
+
+    # update a user
+    put '/rbac-api/v1/groups/:id' do
+      status 200
+    end
   end
 
   module WEBrick
